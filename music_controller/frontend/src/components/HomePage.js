@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import RoomWrapper from './Room';
 import RoomJoinPage from './RoomJoinPage';
 import CreateRoomPage from './CreateRoomPage';
 import { BrowserRouter as Router, Routes, Route} from 'react-router-dom';
@@ -46,6 +47,7 @@ export default class HomePage extends Component {
                     } />
                     <Route path='/join' element={<RoomJoinPage />} />
                     <Route path='/create' element={<CreateRoomPage />} />
+                    <Route path='/room/:roomCode' element={<RoomWrapper />} />
                 </Routes>
             </Router>
         )
