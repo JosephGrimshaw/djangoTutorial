@@ -5,35 +5,35 @@ import CreateRoomPage from './CreateRoomPage';
 import { BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import { Grid, Button, ButtonGroup, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
 export default class HomePage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            roomCode:  null
+            roomCode: null
         };
         this.renderHomePage = this.renderHomePage.bind(this);
+        this.clearRoomCode = this.clearRoomCode.bind(this);
     }
 
     async componentDidMount() {
-        console.log("Started")
         fetch('/api/user-in-room').then((response) => response.json()).then((data) => {
             this.setState({
                 roomCode: data.code
             })
-            console.log(this.state)
         })
     }
 
     renderHomePage() {
-        if (this.state.roomCode != null) {
+        if (this.state.roomCode) {
             return ( <Navigate to={`/room/${this.state.roomCode}`} replace={true} /> )
         } else {
             return (
                 <Grid container spacing={3}>
                     <Grid item xs={12} align="center">
                         <Typography variant="h3" component="h3">
-                            Music Hub
+                            Music Hub {this.state.roomCode}
                         </Typography>
                     </Grid>
                     <Grid item xs={12} align="center">
@@ -50,14 +50,20 @@ export default class HomePage extends Component {
         )
     }
     }
+
+    clearRoomCode() {
+        this.setState({
+            roomCode: null
+        })
+    }
     render () {
         return (
             <Router>
                 <Routes>
-                    <Route path='/' element={this.renderHomePage} />
+                    <Route path='/' element={this.renderHomePage()} />
                     <Route path='/join' element={<RoomJoinPage />} />
                     <Route path='/create' element={<CreateRoomPage />} />
-                    <Route path='/room/:roomCode' element={<RoomWrapper />} />
+                    <Route path='/room/:roomCode' element={<RoomWrapper {...props} leaveRoomCallback={this.clearRoomCode} />}/>
                 </Routes>
             </Router>
         )
