@@ -24,7 +24,7 @@ class RoomJoinPage extends Component {
                     </Typography>
                 </Grid>
                 <Grid item xs={12}>
-                    <TextField error={this.state.error} label="Code" placeholder="Enter a Room Code" value={this.state.roomCode} onChange={this.handleTextFieldChange} helperText={this.state.error} variant="outlined" />
+                    <TextField error={this.state.error != ""} label="Code" placeholder="Enter a Room Code" value={this.state.roomCode} onChange={this.handleTextFieldChange} helperText={this.state.error} variant="outlined" />
                 </Grid>
                 <Grid item xs={12}>
                     <Button variant="contained" color="primary" onClick={this.roomButtonPressed}>Enter Room</Button>
