@@ -7,6 +7,7 @@ import CreateRoomPage from './CreateRoomPage';
 import Setting from '@mui/icons-material/Settings.js'
 import Check from '@mui/icons-material/Check';
 import Exit from '@mui/icons-material/ExitToApp.js';
+import { redirect } from 'react-router-dom';
 class Room extends Component {
     constructor(props) {
         super(props);
@@ -16,16 +17,42 @@ class Room extends Component {
             isHost: false,
             settingsDisplayed: false
         };
+        this.settingsDisplayedChanged = false;
         this.leaveButtonPressed = this.leaveButtonPressed.bind(this);
         this.updateSettingsDisplayed = this.updateSettingsDisplayed.bind(this);
         this.renderSettings = this.renderSettings.bind(this);
+        this.renderSettingsButton = this.renderSettingsButton.bind(this);
     }
 
+   // componentDidUpdate() {
+     //   this.getRoomDetails()
+   // }
+
+    componentDidMount() {
+        this.setState({
+            settingsDisplayed: false
+        })
+        this.getRoomDetails()
+    }
+
+    componentDidUpdate() {
+        console.log("HIIIII")
+        if (this.settingsDisplayedChanged) {
+            console.log(this.state.settingsDisplayed)
+            this.setState({
+                settingsDisplayed: !this.state.settingsDisplayed
+            })
+            console.log(this.state.settingsDisplayed)
+
+        }
+    }
+
+    component
     getRoomDetails() {
         fetch('/api/get-room' + '?code=' + this.props.roomCode).then((response) => {
             if (!response.ok) {
                 this.props.leaveRoomCallback();
-                this.props.navigate("/");
+                redirect();
             }
             return response.json()})
     .then((data) => {
@@ -49,9 +76,12 @@ class Room extends Component {
     }
 
     updateSettingsDisplayed(value) {
+        console.log("settingsDisplayed Updated")
+        console.log(this.state.settingsDisplayed)
         this.setState({
             settingsDisplayed: value
         })
+        console.log(this.state.settingsDisplayed)
     }
 
     renderSettings() {
@@ -62,15 +92,26 @@ class Room extends Component {
                 </Grid>
                 <Grid item xs={12} align="center">
                     <Button endIcon={<Check />} onClick={() => {
-                        this.updateSettingsDisplayed(false)
+                        //this.updateSettingsDisplayed(false)
+                        this.settingsDisplayedChanged = true
                         }} >Update</Button>
                 </Grid>
                 <Grid item xs={12} align="center">
-                    <Button endIcon={<Exit />} onClick={this.updateSettingsDisplayed(false)}>Back</Button>
+                    <Button endIcon={<Exit />} onClick={() => {console.log("HI")
+                        //</Grid>this.updateSettingsDisplayed(false)
+                        this.settingsDisplayedChanged = true
+                        }}>Back</Button>
                 </Grid>
             </Grid>
         )
     }
+
+    //shouldComponentUpdate(nextProps, nextState) {
+    //    if (this.state === nextState) {
+   //         return false;
+   //     }
+    //    return true;
+   // }
 
     renderSettingsButton() {
         return (
@@ -80,7 +121,10 @@ class Room extends Component {
 
     render() {
         const roomCode = this.props.roomCode;
-        this.getRoomDetails()
+        //this.getRoomDetails()
+        if (this.state.settingsDisplayed) {
+            return this.renderSettings()
+        }
         return (
             <Grid container spacing={1}>
                 <Grid item xs={12} align="center">
