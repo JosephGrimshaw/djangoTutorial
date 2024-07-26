@@ -68,7 +68,7 @@ class Room extends Component {
         return (
             <Grid container spacing={1}>
                 <Grid item xs={12} align="center">
-                    <CreateRoomPage update={true} votesToSkip={this.state.votesToSkip} guestCanPause={this.state.guestCanPause} roomCode={this.roomCode} updateCallback={null} />
+                    <CreateRoomPage update={true} votesToSkip={this.state.votesToSkip} guestCanPause={this.state.guestCanPause} roomCode={this.props.roomCode} updateCallback={null} />
                 </Grid>
                 <Grid item xs={12} align="center">
                     <Button endIcon={<Check />} onClick={() => {
