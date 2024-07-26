@@ -17,7 +17,6 @@ class Room extends Component {
             isHost: false,
             settingsDisplayed: false
         };
-        this.settingsDisplayedChanged = false;
         this.leaveButtonPressed = this.leaveButtonPressed.bind(this);
         this.updateSettingsDisplayed = this.updateSettingsDisplayed.bind(this);
         this.renderSettings = this.renderSettings.bind(this);
@@ -29,25 +28,9 @@ class Room extends Component {
    // }
 
     componentDidMount() {
-        this.setState({
-            settingsDisplayed: false
-        })
         this.getRoomDetails()
     }
 
-    componentDidUpdate() {
-        console.log("HIIIII")
-        if (this.settingsDisplayedChanged) {
-            console.log(this.state.settingsDisplayed)
-            this.setState({
-                settingsDisplayed: !this.state.settingsDisplayed
-            })
-            console.log(this.state.settingsDisplayed)
-
-        }
-    }
-
-    component
     getRoomDetails() {
         fetch('/api/get-room' + '?code=' + this.props.roomCode).then((response) => {
             if (!response.ok) {
@@ -75,13 +58,10 @@ class Room extends Component {
         })
     }
 
-    updateSettingsDisplayed(value) {
-        console.log("settingsDisplayed Updated")
-        console.log(this.state.settingsDisplayed)
+    updateSettingsDisplayed() {
         this.setState({
-            settingsDisplayed: value
+            settingsDisplayed: !this.state.settingsDisplayed
         })
-        console.log(this.state.settingsDisplayed)
     }
 
     renderSettings() {
@@ -92,36 +72,26 @@ class Room extends Component {
                 </Grid>
                 <Grid item xs={12} align="center">
                     <Button endIcon={<Check />} onClick={() => {
-                        //this.updateSettingsDisplayed(false)
-                        this.settingsDisplayedChanged = true
+                        this.updateSettingsDisplayed()
                         }} >Update</Button>
                 </Grid>
                 <Grid item xs={12} align="center">
                     <Button endIcon={<Exit />} onClick={() => {console.log("HI")
-                        //</Grid>this.updateSettingsDisplayed(false)
-                        this.settingsDisplayedChanged = true
+                        this.updateSettingsDisplayed()
                         }}>Back</Button>
                 </Grid>
             </Grid>
         )
     }
 
-    //shouldComponentUpdate(nextProps, nextState) {
-    //    if (this.state === nextState) {
-   //         return false;
-   //     }
-    //    return true;
-   // }
 
     renderSettingsButton() {
         return (
-                <Button endIcon={<Setting />} color="info" variant="contained" size="medium" onClick={this.updateSettingsDisplayed(true)} >Room Settings</Button>
+                <Button endIcon={<Setting />} color="info" variant="contained" size="medium" onClick={this.updateSettingsDisplayed} >Room Settings</Button>
         )
     }
 
     render() {
-        const roomCode = this.props.roomCode;
-        //this.getRoomDetails()
         if (this.state.settingsDisplayed) {
             return this.renderSettings()
         }
@@ -129,7 +99,7 @@ class Room extends Component {
             <Grid container spacing={1}>
                 <Grid item xs={12} align="center">
                     <Typography variant="h4" component="h4">
-                        Code: {roomCode}
+                        Code: {this.props.roomCode}
                     </Typography>
                 </Grid>
                 <Grid item xs={12} align="center">
@@ -169,9 +139,6 @@ class Room extends Component {
 
 function RoomWrapper({ navigate, leaveRoomCallback }) {
     const {roomCode} = useParams();
-    console.log(roomCode + "RoomCode")
-    console.log(leaveRoomCallback + "leaveRoomCallback")
-
     return <Room roomCode={roomCode}  navigate={navigate} leaveRoomCallback={leaveRoomCallback} />
 }
 
